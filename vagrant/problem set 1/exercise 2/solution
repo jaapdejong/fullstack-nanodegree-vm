@@ -1,0 +1,51 @@
+Using SQLAlchemy perform the following queries on your database:
+1. Query all of the puppies and return the results in ascending alphabetical order
+2. Query all of the puppies that are less than 6 months old organized by the youngest first
+3. Query all puppies by ascending weight
+4. Query all puppies grouped by the shelter in which they are staying
+
+0. Setup
+
+	from sqlalchemy import create_engine, asc
+	from sqlalchemy.orm import sessionmaker
+	from puppies import Base, Shelter, Puppy
+	engine = create_engine('sqlite:///puppyshelter.db')
+	Base.metadata.bind = engine
+	DBSession = sessionmaker(bind = engine)
+	session = DBSession()
+
+
+1. Query all of the puppies and return the results in ascending alphabetical order
+
+	puppies = session.query(Puppy).order_by(asc(Puppy.name)).all()
+	for puppy in puppies:
+	    print puppy.name
+
+
+2. Query all of the puppies that are less than 6 months old organized by the youngest first
+
+	puppies = session.query(Puppy).filter(Puppy.dateOfBirth >= '2016-06-30').order_by(asc(Puppy.dateOfBirth)).all()
+	for puppy in puppies:
+	    print puppy.name, puppy.dateOfBirth
+
+
+3. Query all puppies by ascending weight
+
+	puppies = session.query(Puppy).order_by(asc(Puppy.weight)).all()
+	for puppy in puppies:
+	    print puppy.name, puppy.weight
+
+
+4. Query all puppies grouped by the shelter in which they are staying
+
+	puppies = session.query(Puppy).order_by(asc(Puppy.shelter_id)).all()
+	prevShelterId = ""
+	for puppy in puppies:
+	    if prevShelterId != puppy.shelter_id:
+	    	if prevShelterId != "":
+	    		print
+	    	print puppy.shelter.name
+	    	prevShelterId = puppy.shelter_id
+	    	
+	    print puppy.name
+
