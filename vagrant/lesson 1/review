@@ -20,7 +20,7 @@ We created a new Restaurant and called it Pizza Palace:
 
 	myFirstRestaurant = Restaurant(name = "Pizza Palace")
 	session.add(myFirstRestaurant)
-	sesssion.commit()
+	session.commit()
 
 We created a cheese pizza menu item and added it to the Pizza Palace Menu:
 
