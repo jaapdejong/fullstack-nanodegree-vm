@@ -1,0 +1,14 @@
+start vm
+	vagrant up
+
+login & start webserver
+	vagrant ssh
+		cd /vagrant/lesson\ 2
+		./webserver.py
+
+browse
+	google-chrome http://localhost:8080/hello
+
+stop vm
+	vagrant halt
+
