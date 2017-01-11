@@ -24,10 +24,7 @@ class WebServerHandler(BaseHTTPRequestHandler):
             restaurants = session.query(Restaurant).all()
             for restaurant in restaurants:
                 output += restaurant.name
-                output += "  <a href='#'>Edit</a>"
-# TODO #
-# add the id: output += "  <a href="/restaurants/" + id + "/edit>Edit</a>"
-# TODO #
+                output += "  <a href='" + str(restaurant.id) + "/edit'>Edit</a>"
                 output += "  <a href='#'>Delete</a>"
                 output += "</br>"
 
@@ -62,18 +59,15 @@ class WebServerHandler(BaseHTTPRequestHandler):
             self.end_headers()
             output  = "<html>"
             output += " <body>"
-# TODO # not the UrbanVeggieBurger
-            UrbanVeggieBurger = session.query(MenuItem).filter_by(id=8).one()
-            UrbanVeggieBurger.price = '$2.99'
-            session.add(UrbanVeggieBurger)
-            session.commit()
-# TODO # other fields...
-            output += "  <form method='POST' enctype='multipart/form-data' action='/restaurants/new'>"
-            output += "   <h2>Restaurant to add</h2>"
+            fields = self.path.split("/")
+            restaurantId = fields[1]
+
+            output += "  <form method='POST' enctype='multipart/form-data' action='/restaurants/" + restaurantId + "/update'>"
+            output += "   <h2>New name</h2>"
             output += "   <input name='restaurant' type='text'>"
-            output += "   <input type='submit' value='Add'>"
+            output += "   <input type='submit' value='Update'>"
             output += "  </form>"
-# TODO # and probably some other stuff too...
+
             output += " </body>"
             output += "</html>"
             self.wfile.write(output)
@@ -91,9 +85,31 @@ class WebServerHandler(BaseHTTPRequestHandler):
                     fields = cgi.parse_multipart(self.rfile, pdict)
                     messagecontent = fields.get('restaurant')
 
-                    newRestaurant = Restaurant(name = messagecontent[0])
+                    newName = messagecontent[0]
+                    newRestaurant = Restaurant(name = newName)
                     session.add(newRestaurant)
                     session.commit()
+
+                    self.send_response(301)
+                    self.send_header('Content-type', 'text/html')
+                    self.send_header('Location', '/restaurants')
+                    self.end_headers()
+
+            if self.path.endswith("/update"):
+                ctype, pdict = cgi.parse_header(self.headers.getheader('content-type'))
+                if ctype == 'multipart/form-data':
+                    fields = cgi.parse_multipart(self.rfile, pdict)
+                    messagecontent = fields.get('restaurant')
+                    newName = messagecontent[0]
+                    fields = self.path.split("/")
+                    restaurantId = fields[2]
+                    print "id =", restaurantId
+                    print "newName =", newName
+
+                    restaurant = session.query(Restaurant).filter_by(id=restaurantId).one()
+                    restaurant.name = newName
+                    session.add(restaurant)
+                    session.commit() 
 
                     self.send_response(301)
                     self.send_header('Content-type', 'text/html')
