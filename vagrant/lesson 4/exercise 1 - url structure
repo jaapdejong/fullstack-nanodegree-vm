@@ -1,0 +1,26 @@
+1 Show all Restaurants
+	/
+	/restaurants
+
+2 Create a new Restaurant
+	/restaurants/new
+
+3 Edit a Restaurant
+	/restaurants/<int:restaurant_id>/edit
+
+4 Delete a Restaurant
+	/restaurants/<int:restaurant_id>/delete
+
+5 Show a Restaurant Menu
+	/restaurants/<int:restaurant_id>
+	/restaurants/<int:restaurant_id>/menu
+
+6 Create a new Restaurant Menu Item
+	/restaurants/<int:restaurant_id>/new
+
+7 Edt a Restaurant Menu Item
+	/restaurants/<int:restaurant_id>/<int:menu_id>/edit
+
+8 Delete a Restaurant Menu Item
+	/restaurants/<int:restaurant_id>/<int:menu_id>/delete
+
